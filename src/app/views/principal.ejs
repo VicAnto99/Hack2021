@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HackMX</title>
+    <script src="https://unpkg.com/vue@next"></script>
+</head>
+
+<body>
+
+    <div id="app">
+        <h3>{{ latitud }}</h3>
+        <h3>{{ longitud }}</h3>
+        <h3>{{ cuenta }}</h3>
+    </div>
+
+
+    <script>
+
+        const app = Vue.createApp({
+            data() {
+                return {
+                    cuenta: '<%=direccion.length%>',
+                    latitud: '',
+                    longitud: ''
+                }
+            },
+            methods: {
+                Localizacion() {
+                    let sthis = this
+                    navigator.geolocation.getCurrentPosition((pos) => {
+                        sthis.latitud = pos.coords.latitude;
+                        sthis.longitud = pos.coords.longitude
+                    });
+                    navigator.geolocation.watchPosition((pos) => {
+                        sthis.latitud = pos.coords.latitude;
+                        sthis.longitud = pos.coords.longitude
+                    }, (err) => {
+                        console.warn('ERROR(' + err.code + '): ' + err.message);
+                    }, {
+                        enableHighAccuracy: true,
+                        timeout: 3000,
+                        maximumAge: 0
+                    })
+                }
+            },
+            computed: {
+
+            },
+            mounted() {
+                this.Localizacion();
+            }
+        })
+
+    </script>
+    <script>
+        app.mount('#app');
+    </script>
+
+</body>
+
+</html>
+<!--  -->
