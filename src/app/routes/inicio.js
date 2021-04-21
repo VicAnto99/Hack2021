@@ -11,5 +11,15 @@ module.exports =  app => {
             })
             
         }
+    )    
+    app.get('/mapa', (req,res) =>
+        {
+            connection.query('SELECT * FROM direccion', (err, result) => {
+                res.render('mapa',{
+                    direccion: result
+                });
+            })
+            
+        }
     )
 }
