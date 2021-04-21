@@ -81,47 +81,50 @@
                     cuenta: '<%=direccion.length%>',
                     latitud: '',
                     longitud: '',
-                    mapaCreado: false
+                    mapaCreado: false,
+                    miMarca: ''
                 }
             },
             methods: {
                 Localizacion() {
+                    console.log(this);
                     let sthis = this;
-                    navigator.geolocation.watchPosition(function (pos) {
+                    navigator.geolocation.getCurrentPosition(function (pos) {
                         sthis.latitud = pos.coords.latitude;
                         sthis.longitud = pos.coords.longitude;
-                        console.log('hola');
                         if (!sthis.mapaCreado) {
                             sthis.mapaCreado = true;
                             map = new google.maps.Map(document.getElementById('map'), {
-                            center: { lat: sthis.latitud, lng: sthis.longitud },
-                            zoom: 20
-                        });
-                        }
-                        const marker = new google.maps.Marker({
-                            position: { lat: sthis.latitud, lng: sthis.longitud },
-                            map: map,
-                        });
-                    });
+                                center: { lat: sthis.latitud, lng: sthis.longitud },
+                                zoom: 18
+                            });
 
+                            sthis.miMarca = new google.maps.Marker({
+                                position: { lat: sthis.latitud, lng: sthis.longitud },
+                                map: map,
+                            });
+                        } else {
+                            setTimeout(sthis.miMarca.setPosition({ lat: sthis.latitud, lng: sthis.longitud }), 1000);
+                        }
+                    });
                 }
             },
             computed: {
             },
             mounted() {
+                sthis = this;
                 this.Localizacion();
+                setInterval(function(){ sthis.Localizacion();}.bind(sthis), 1000);
                 // map.setCenter({ lat: sthis.latitud, lng: sthis.longitud });
                 //map.getCenter().lat()
-                //ap.getCenter().lng()
+                //map.getCenter().lng()
             },
             watch: {
             }
         })
-        function initMap() { }
     </script>
-    <script
-        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAZYQJzcATFRSo0thLQRuSIC7ip27v_d3s&libraries=places&callback=initMap">
-        </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAZYQJzcATFRSo0thLQRuSIC7ip27v_d3s&libraries=places">
+    </script>
     <script>
         app.mount('#app');
     </script>
