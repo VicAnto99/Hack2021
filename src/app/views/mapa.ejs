@@ -81,29 +81,28 @@
                     cuenta: '<%=direccion.length%>',
                     latitud: '',
                     longitud: '',
-                    posicion: ''
+                    mapaCreado: false
                 }
             },
             methods: {
                 Localizacion() {
                     let sthis = this;
-                    navigator.geolocation.getCurrentPosition((pos) => {
+                    navigator.geolocation.watchPosition(function (pos) {
                         sthis.latitud = pos.coords.latitude;
                         sthis.longitud = pos.coords.longitude;
-                        sthis.posicion = sthis.latitud + sthis.longitud;
+                        console.log('hola');
+                        if (!sthis.mapaCreado) {
+                            sthis.mapaCreado = true;
+                            map = new google.maps.Map(document.getElementById('map'), {
+                            center: { lat: sthis.latitud, lng: sthis.longitud },
+                            zoom: 20
+                        });
+                        }
+                        const marker = new google.maps.Marker({
+                            position: { lat: sthis.latitud, lng: sthis.longitud },
+                            map: map,
+                        });
                     });
-                    navigator.geolocation.watchPosition((pos) => {
-                        sthis.latitud = pos.coords.latitude;
-                        sthis.longitud = pos.coords.longitude;
-                        sthis.posicion = sthis.latitud + sthis.longitud;
-                    }, (err) => {
-                        console.warn('ERROR(' + err.code + '): ' + err.message);
-                    }, {
-                        enableHighAccuracy: true,
-                        timeout: 3000,
-                        maximumAge: 0
-                    })
-
 
                 }
             },
@@ -111,23 +110,16 @@
             },
             mounted() {
                 this.Localizacion();
+                // map.setCenter({ lat: sthis.latitud, lng: sthis.longitud });
+                //map.getCenter().lat()
+                //ap.getCenter().lng()
             },
             watch: {
-                posicion: function () {
-                    map = new google.maps.Map(document.getElementById('map'), {
-                        center: { lat: this.latitud, lng: this.longitud },
-                        zoom: 20
-                    });
-                    const marker = new google.maps.Marker({
-                        position: { lat: this.latitud, lng: this.longitud },
-                        map: map,
-                    });
-                }
             }
         })
-        function initMap(){}
+        function initMap() { }
     </script>
-        <script
+    <script
         src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAZYQJzcATFRSo0thLQRuSIC7ip27v_d3s&libraries=places&callback=initMap">
         </script>
     <script>
